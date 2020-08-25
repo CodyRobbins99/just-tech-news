@@ -37,7 +37,7 @@ router.get('/:id', (req, res) => {
 
 // POST /api/users
 router.post('/', (req, res) => {
-    // expects {username: 'Cody', email: 'codyrobbins@gmail.com', password: '2kool4skool'}
+    // expects {username: 'codyr', email: 'codyrobbins@gmail.com', password: '2kool4skool'}
     User.create({
         username: req.body.username,
         email: req.body.email,
@@ -50,9 +50,33 @@ router.post('/', (req, res) => {
         });
 });
 
+// POST /api/users/login
+router.post('/login', (req, res) => {
+    // expects {username: 'Cody', email: 'codyrobbins@gmail.com', password: '2kool4skool'}
+    User.findOne({
+        where: {
+            email: req.body.email
+        }
+    }).then(dbUserData => {
+        if (!dbUserData) {
+            res.status(400).json({ message: 'No user with that email address!' });
+            return;
+        }
+
+        const validPassword = dbUserData.checkPassword(req.body.password);
+
+        if (!validPassword) {
+            res.status(400).json({ message: 'Incorrect password!' });
+            return;
+        }
+
+        res.json({ user: dbUserData, message: 'You are now logged in!' });
+    });
+});
+
 // PUT /api/users/1
 router.put('/:id', (req, res) => {
-    // expects {username: 'Cody', email: 'codyrobbins@gmail.com', password: '2kool4skool'}
+    // expects {username: 'codyr', email: 'codyrobbins@gmail.com', password: '2kool4skool'}
 
     // if req.body has exact key/value pairs to match model, use `req.body` instead
     User.update(req.body, {
