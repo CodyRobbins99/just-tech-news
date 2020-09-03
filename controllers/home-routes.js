@@ -66,9 +66,9 @@ router.get('/post/:id', (req, res) => {
                 model: Comment,
                 attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
                 include: {
-                model: User,
-                attributes: ['username']
-            }
+                    model: User,
+                    attributes: ['username']
+                }
             },
             {
                 model: User,
@@ -84,7 +84,7 @@ router.get('/post/:id', (req, res) => {
     
         // serialize the data
         const post = dbPostData.get({ plain: true });
-    
+        
         // pass data to template
         res.render('single-post', {
             post,
